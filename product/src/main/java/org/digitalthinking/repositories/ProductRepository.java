@@ -16,13 +16,22 @@ public class ProductRepository {
     @Transactional
     public void createdProduct(Product p){
         em.persist(p);
+    }
 
+    @Transactional
+    public void updateProduct(Product p) {
+        em.merge(p);
     }
 
     @Transactional
     public void deleteProduct(Product p){
         em.remove(p);
+    }
 
+    @Transactional
+    public Product getProductById(Long productId) {
+        Product product = em.find(Product.class, productId);
+        return product;
     }
 
     @Transactional

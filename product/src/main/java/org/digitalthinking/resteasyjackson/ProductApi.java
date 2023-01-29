@@ -22,17 +22,33 @@ public class ProductApi {
         return pr.listProduct();
     }
 
+    @GET
+    @Path("/{id}")
+    public Product findProductById(@PathParam("id") Long id) {
+        return pr.getProductById(id);
+    }
+
     @POST
     public Response add(Product p) {
         pr.createdProduct(p);
         return Response.ok().build();
     }
 
-    @DELETE
-    public Response delete(Product p) {
-       pr.deleteProduct(p);
+    @PUT
+    public Response update(Product p) {
+        Product product = pr.getProductById(p.getId());
+        product.setCode(p.getCode());
+        product.setName(p.getName());
+        product.setDescription(p.getDescription());
+        pr.updateProduct(product);
         return Response.ok().build();
     }
 
+    @DELETE
+    @Path("/{Id}")
+    public Response delete(@QueryParam("Id") Long Id) {
+       pr.deleteProduct(pr.getProductById(Id));
+       return Response.ok().build();
+    }
 
 }

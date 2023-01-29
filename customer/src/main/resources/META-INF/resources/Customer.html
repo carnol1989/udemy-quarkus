@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Customer REST service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css"/>
+    <!-- Load AngularJS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("CustomerManagement", []);
+
+      //Controller Part
+      app.controller("CustomerManagementController", function ($scope, $http) {
+
+        //Initialize page with default data which is blank in this example
+        $scope.customers = [];
+
+        $scope.form = {
+          //code: "",
+          accountNumber: "",
+          names: "",
+          surname: "",
+          phone: "",
+          address: ""//,
+          //customers: ""
+        };
+
+        //Now load the data from server
+        _refreshPageData();
+
+        //HTTP POST methods for add customers
+        $scope.add = function () {
+          var data = {
+            "accountNumber": $scope.form.accountNumber,
+            "names": $scope.form.names,
+             "surname": $scope.form.surname,
+             "phone": $scope.form.phone,
+             "address": $scope.form.address
+          };
+
+          $http({
+            method: "POST",
+            url: '/customer',
+            data: angular.toJson(data),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(_success, _error);
+        };
+
+        /* Private Methods */
+        //HTTP GET- get all customers collection
+        function _refreshPageData() {
+          $http({
+            method: 'GET',
+            url: '/customer'
+          }).then(function successCallback(response) {
+            $scope.customers = response.data;
+          }, function errorCallback(response) {
+            console.log(response.statusText);
+          });
+        }
+
+
+        function _success(response) {
+          _refreshPageData();
+          _clearForm();
+        }
+
+        function _error(response) {
+          alert(response.data.message || response.statusText);
+        }
+
+        //Clear the form
+        function _clearForm() {
+          $scope.form.accountNumber = "";
+          $scope.form.names = "";
+          $scope.form.surname = "";
+          $scope.form.phone = "";
+          $scope.form.address = "";
+        }
+      });
+    </script>
+</head>
+<body ng-app="CustomerManagement" ng-controller="CustomerManagementController">
+
+<div class="container">
+    <h1>REST Service - Customer</h1>
+
+    <h3>Add a customer</h3>
+    <form ng-submit="add()">
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Account Number" ng-model="form.accountNumber" size="60"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Names" ng-model="form.names" size="60"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Surname" ng-model="form.surname" size="60"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Phone" ng-model="form.phone" size="60"/></div>
+        </div>
+        <div class="row">
+            <div class="col-6"><input type="text" placeholder="Address" ng-model="form.address" size="60"/></div>
+        </div>
+        <input type="submit" value="Save"/>
+    </form>
+
+    <h3>Customer List</h3>
+    <div class="row">
+        <div class="col-2">Account Number</div>
+        <div class="col-3">Names</div>
+        <div class="col-3">Surname</div>
+        <div class="col-2">Phone</div>
+        <div class="col-2">Address</div>
+    </div>
+    <div class="row" ng-repeat="customer in customers">
+        <div class="col-2">{{ customer.accountNumber }}</div>
+        <div class="col-3">{{ customer.names }}</div>
+        <div class="col-3">{{ customer.surname }}</div>
+        <div class="col-2">{{ customer.phone }}</div>
+        <div class="col-2">{{ customer.address }}</div>
+    </div>
+</div>
+
+</body>
+</html>
