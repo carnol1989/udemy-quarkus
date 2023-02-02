@@ -10,6 +10,7 @@ import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.WebClient;
 import lombok.extern.slf4j.Slf4j;
 import org.digitalthinking.entites.Customer;
+import org.digitalthinking.entites.CustomerView;
 import org.digitalthinking.entites.Product;
 import org.digitalthinking.repositories.CustomerRepository;
 
@@ -50,7 +51,7 @@ public class CustomerApi {
 
     @GET
     @Blocking
-    public List<Customer> list() {
+    public List<CustomerView> list() {
         return pr.listCustomers();
     }
 

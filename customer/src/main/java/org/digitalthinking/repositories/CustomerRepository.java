@@ -1,6 +1,11 @@
 package org.digitalthinking.repositories;
 
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.view.EntityViewManager;
+import com.blazebit.persistence.view.EntityViewSetting;
 import org.digitalthinking.entites.Customer;
+import org.digitalthinking.entites.CustomerView;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,6 +17,12 @@ import java.util.List;
 public class CustomerRepository {
     @Inject
     EntityManager em;
+
+    @Inject
+    CriteriaBuilderFactory cbf;
+
+    @Inject
+    EntityViewManager evm;
 
     @Transactional
     public void createdCustomer(Customer p){
@@ -35,8 +46,12 @@ public class CustomerRepository {
     }
 
     @Transactional
-    public List<Customer> listCustomers(){
-        List<Customer> customers = em.createQuery("select c from Customer c").getResultList();
+    public List<CustomerView> listCustomers(){
+        //List<Customer> customers = em.createQuery("select c from Customer c").getResultList();
+
+        CriteriaBuilder<Customer> cb = cbf.create(em, Customer.class);
+        List<CustomerView> customers = evm.applySetting(EntityViewSetting.create(CustomerView.class), cb).getResultList();
+
         return customers;
     }
 }

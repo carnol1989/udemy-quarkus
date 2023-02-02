@@ -69,6 +69,16 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
+
+    <!--Crea su propios endpoints-->
+    <!--<dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-spring-data-rest</artifactId>
+    </dependency>-->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-spring-data-jpa</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
