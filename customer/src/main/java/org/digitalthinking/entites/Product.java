@@ -1,16 +1,16 @@
 package org.digitalthinking.entites;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-public class Product {
+public class Product extends PanacheEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Transient
     private Long Id;
     @ManyToOne
     @JoinColumn(name = "customer", referencedColumnName = "id")

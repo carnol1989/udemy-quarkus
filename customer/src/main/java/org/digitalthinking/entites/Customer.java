@@ -1,6 +1,7 @@
 package org.digitalthinking.entites;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,11 +9,8 @@ import java.util.List;
 
 @Entity
 @Data
-public class Customer {
+public class Customer extends PanacheEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String code;
     private String accountNumber;
     private String names;
