@@ -8,10 +8,14 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"customer", "product"})
+)
 public class Product extends PanacheEntity {
 
     @Transient
-    private Long Id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "customer", referencedColumnName = "id")
     @JsonBackReference

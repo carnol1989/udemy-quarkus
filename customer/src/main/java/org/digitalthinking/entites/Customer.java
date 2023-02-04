@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
