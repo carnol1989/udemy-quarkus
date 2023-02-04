@@ -2,9 +2,11 @@ package org.digitalthinking.resteasyjackson;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Sort;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import lombok.extern.slf4j.Slf4j;
 import org.digitalthinking.entites.Customer;
+import org.digitalthinking.entites.Product;
 import org.digitalthinking.repositories.CustomerRepository;
 import org.jboss.resteasy.reactive.RestPath;
 
@@ -61,6 +63,20 @@ public class CustomerApi {
     @Path("/{Id}")
     public Uni<Response> delete(@PathParam("Id") Long Id) {
         return cr.delete(Id);
+    }
+
+    @GET
+    @Path("/products-graphql")
+    @Blocking
+    public  List<Product> getProductsGraphQl() throws Exception {
+        return cr.getProductsGraphQl();
+    }
+
+    @GET
+    @Path("/{id}/product-graphql")
+    @Blocking
+    public  Product getProductsGraphQl(@PathParam("id") Long id) throws Exception {
+        return cr.getByIdProductGraphQl(id);
     }
 
 }

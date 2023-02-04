@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
+import io.smallrye.graphql.client.GraphQLClient;
+import io.smallrye.graphql.client.core.Document;
+import io.smallrye.graphql.client.dynamic.api.DynamicGraphQLClient;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -26,6 +29,9 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.smallrye.graphql.client.core.Document.document;
+import static io.smallrye.graphql.client.core.Field.field;
+import static io.smallrye.graphql.client.core.Operation.operation;
 import static javax.ws.rs.core.Response.Status.*;
 
 @Slf4j
@@ -36,6 +42,10 @@ public class CustomerRepository implements PanacheRepositoryBase<Customer, Long>
     Vertx vertx;
 
     private WebClient webClient;//permite comunicarnos con otro microservicio
+
+    @Inject
+            @GraphQLClient("product-dynamic-client")
+    DynamicGraphQLClient dynamicGraphQLClient;
 
     @PostConstruct
     void initialize() {
@@ -123,6 +133,38 @@ public class CustomerRepository implements PanacheRepositoryBase<Customer, Long>
         c.getProducts().forEach(p -> p.setCustomer(c));
         return Panache.withTransaction(c::persist)
                 .replaceWith(c);
+    }
+
+    public List<Product> getProductsGraphQl() throws Exception {
+        Document query = document(
+                operation(
+                        field("allProducts",
+                                field("id"),
+                                field("code"),
+                                field("name"),
+                                field("description")
+                        )
+                )
+        );
+
+        io.smallrye.graphql.client.Response response = dynamicGraphQLClient.executeSync(query);
+        return response.getList(Product.class, "allProducts");
+    }
+
+    public Product getByIdProductGraphQl(Long id) throws Exception {
+        Document query = document(
+                operation(
+                        field("productById(productId:"+id+")",
+                                field("id"),
+                                field("code"),
+                                field("name"),
+                                field("description")
+                        )
+                )
+        );
+
+        io.smallrye.graphql.client.Response response = dynamicGraphQLClient.executeSync(query);
+        return response.getObject(Product.class, "productById");
     }
 
 }
